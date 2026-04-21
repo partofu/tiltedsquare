@@ -745,7 +745,50 @@
 
   </script>
   <!-- Start of bodyEnd -->
-
+  <script>
+    // Override Framer's dynamic title with custom branding
+    (function() {
+      var CUSTOM_TITLE = "Tilted Square | AI Powered Design Studio";
+      
+      // Set title immediately
+      document.title = CUSTOM_TITLE;
+      
+      // Watch for Framer's React app overwriting the title
+      var titleEl = document.querySelector("title");
+      if (titleEl) {
+        var observer = new MutationObserver(function() {
+          if (document.title !== CUSTOM_TITLE) {
+            document.title = CUSTOM_TITLE;
+          }
+        });
+        observer.observe(titleEl, { childList: true, characterData: true, subtree: true });
+      }
+      
+      // Also watch for Framer adding new <title> elements
+      var headObserver = new MutationObserver(function(mutations) {
+        mutations.forEach(function(m) {
+          m.addedNodes.forEach(function(node) {
+            if (node.tagName === "TITLE" && node.textContent !== CUSTOM_TITLE) {
+              node.textContent = CUSTOM_TITLE;
+            }
+          });
+        });
+        if (document.title !== CUSTOM_TITLE) {
+          document.title = CUSTOM_TITLE;
+        }
+      });
+      headObserver.observe(document.head, { childList: true, subtree: true });
+      
+      // Ensure favicon stays correct
+      var existingIcons = document.querySelectorAll('link[rel="icon"], link[rel="shortcut icon"]');
+      existingIcons.forEach(function(el) {
+        if (el.getAttribute("href") !== "favicon.svg") {
+          el.setAttribute("href", "favicon.svg");
+          el.setAttribute("type", "image/svg+xml");
+        }
+      });
+    })();
+  </script>
   <!-- End of bodyEnd -->
 </body>
 
